@@ -16,6 +16,7 @@ func main() {
 
 	e.GET("/health", echo.WrapHandler(http.HandlerFunc(health.Check)))
 	e.GET("/library/v1/books", controllers.GetBooksV1)
+	e.GET("/library/v1/books/:bookId/cover.jpg", controllers.GetImagesV1)
 
 	e.Logger.Fatal(e.Start(":8000"))
 }

@@ -6,6 +6,8 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
+// TODO Clean up panics and db passing
+
 type Book struct {
 	Title       string  `json:"title"`
 	Subtitle    *string `json:"subtitle,omitempty"`
@@ -17,6 +19,11 @@ type Book struct {
 	Publisher   *string `json:"publisher,omitempty"`
 	PublishYear int     `json:"publishYear"`
 	PageCount   *int    `json:"pageCount,omitempty"`
+	Image       *string `json:"image,omitempty"`
+}
+
+type Image struct {
+	Blob *string
 }
 
 func InitDB(filepath string) *sql.DB {
@@ -24,15 +31,18 @@ func InitDB(filepath string) *sql.DB {
 	if err != nil {
 		panic(err)
 	}
+
 	if db == nil {
 		panic("db nil")
 	}
+
 	return db
 }
 
-func ReadItem(db *sql.DB) []Book {
+func ReadBooks(db *sql.DB, path string) []Book {
 	sql_readall := `
-	SELECT ZTITLE, ZSUBTITLE, ZDISPLAYNAME, ZGENRE, ZSYNOPSIS, ZLCC, ZISBN, ZPUBLISHER, ZPUBLISHYEAR, ZPAGECOUNT FROM ZBOOK
+	SELECT ZTITLE, ZSUBTITLE, ZDISPLAYNAME, ZGENRE, ZSYNOPSIS, ZLCC, ZISBN, ZPUBLISHER, ZPUBLISHYEAR, ZPAGECOUNT, ZBOOK.Z_PK
+	FROM ZBOOK
 	INNER JOIN ZAUTHOR ON ZBOOK.ZAUTHORINFO=ZAUTHOR.Z_PK;
 `
 
@@ -40,17 +50,42 @@ func ReadItem(db *sql.DB) []Book {
 	if err != nil {
 		panic(err)
 	}
+
 	defer rows.Close()
 
 	var allBooks []Book
 	for rows.Next() {
 		book := Book{}
-		err2 := rows.Scan(&book.Title, &book.Subtitle, &book.Author, &book.Genre, &book.Synopsis, &book.LCC, &book.ISBN, &book.Publisher, &book.PublishYear, &book.PageCount)
+		err2 := rows.Scan(&book.Title, &book.Subtitle, &book.Author, &book.Genre, &book.Synopsis, &book.LCC, &book.ISBN, &book.Publisher, &book.PublishYear, &book.PageCount, &book.Image)
 		if err2 != nil {
 			panic(err2)
 		}
+
+		if len(*book.Image) > 0 {
+			*book.Image = path + "/" + *book.Image + "/cover.jpg"
+		}
+
 		allBooks = append(allBooks, book)
 	}
 
 	return allBooks
+}
+
+func ReadImage(db *sql.DB, id string) []byte {
+	sql_readall := `
+	SELECT ZIMAGE
+	FROM ZIMAGE
+	WHERE Z_PK=$1;
+`
+
+	row := db.QueryRow(sql_readall, id)
+
+	bookImage := Image{}
+	err := row.Scan(&bookImage.Blob)
+	if err != nil {
+		panic(err)
+	}
+
+	return []byte(*bookImage.Blob)
+
 }

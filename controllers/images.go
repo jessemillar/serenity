@@ -7,8 +7,10 @@ import (
 	"github.com/labstack/echo"
 )
 
-func GetBooksV1(c echo.Context) error {
+func GetImagesV1(c echo.Context) error {
 	db := helpers.InitDB("BookBuddy.backup")
 
-	return c.JSON(http.StatusOK, helpers.ReadBooks(db, c.Request().URL.String()))
+	blob := helpers.ReadImage(db, c.Param("bookId"))
+
+	return c.Blob(http.StatusOK, http.DetectContentType(blob), blob)
 }
