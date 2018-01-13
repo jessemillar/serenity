@@ -26,19 +26,6 @@ type Image struct {
 	Blob *string
 }
 
-func InitDB(filepath string) *sql.DB {
-	db, err := sql.Open("sqlite3", filepath)
-	if err != nil {
-		panic(err)
-	}
-
-	if db == nil {
-		panic("db nil")
-	}
-
-	return db
-}
-
 func ReadBooks(db *sql.DB, path string) []Book {
 	sql_readall := `
 	SELECT ZTITLE, ZSUBTITLE, ZDISPLAYNAME, ZGENRE, ZSYNOPSIS, ZLCC, ZISBN, ZPUBLISHER, ZPUBLISHYEAR, ZPAGECOUNT, ZBOOK.Z_PK
