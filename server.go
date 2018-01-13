@@ -5,8 +5,6 @@ import (
 
 	"os"
 
-	"fmt"
-
 	"io"
 
 	"github.com/dropbox/dropbox-sdk-go-unofficial/dropbox"
@@ -20,13 +18,11 @@ import (
 
 func main() {
 	config := dropbox.Config{
-		Token:    os.Getenv("SERENITY_LIBRARY_DROPBOX"),
-		LogLevel: dropbox.LogInfo, // if needed, set the desired logging level. Default is off
+		Token: os.Getenv("SERENITY_LIBRARY_DROPBOX"),
 	}
 
 	dbf := files.New(config)
-	meta, content, err := dbf.Download(files.NewDownloadArg("/BookBuddy.backup"))
-	fmt.Println(meta, content, err)
+	_, content, err := dbf.Download(files.NewDownloadArg("/BookBuddy.backup"))
 
 	outFile, err := os.Create("BookBuddy.backup")
 	// handle err
