@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"html/template"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -45,18 +46,18 @@ func main() {
 
 	database.InitDB("BookBuddy.backup")
 
-	templateEngine := &helpers.Template{
-		Templates: template.Must(template.ParseGlob("public/*/*.html")),
-	}
-
-	router.Renderer = templateEngine
-
 	e := echo.New()
 	e.Pre(middleware.RemoveTrailingSlash())
 	e.Use(middleware.CORS())
 
+	templateEngine := &helpers.Template{
+		Templates: template.Must(template.ParseGlob("public/*/*.html")),
+	}
+
+	e.Renderer = templateEngine
+
 	e.GET("/health", echo.WrapHandler(http.HandlerFunc(health.Check)))
-	e.Static("/library", "public")
+	e.Static("/library/*", "public")
 	e.GET("/library/v1/books", controllers.GetBooksV1)
 	e.GET("/library/v1/books/:bookId/cover", controllers.GetCoverV1)
 
