@@ -10,6 +10,7 @@ import (
 
 	"github.com/dropbox/dropbox-sdk-go-unofficial/dropbox"
 	"github.com/dropbox/dropbox-sdk-go-unofficial/dropbox/files"
+	"github.com/jessemillar/byudzhet/helpers"
 	"github.com/jessemillar/health"
 	"github.com/jessemillar/serenity/controllers"
 	"github.com/jessemillar/serenity/database"
@@ -44,11 +45,18 @@ func main() {
 
 	database.InitDB("BookBuddy.backup")
 
+	templateEngine := &helpers.Template{
+		Templates: template.Must(template.ParseGlob("public/*/*.html")),
+	}
+
+	router.Renderer = templateEngine
+
 	e := echo.New()
 	e.Pre(middleware.RemoveTrailingSlash())
 	e.Use(middleware.CORS())
 
 	e.GET("/health", echo.WrapHandler(http.HandlerFunc(health.Check)))
+	e.Static("/library", "public")
 	e.GET("/library/v1/books", controllers.GetBooksV1)
 	e.GET("/library/v1/books/:bookId/cover", controllers.GetCoverV1)
 
