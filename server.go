@@ -11,10 +11,11 @@ import (
 
 	"github.com/dropbox/dropbox-sdk-go-unofficial/dropbox"
 	"github.com/dropbox/dropbox-sdk-go-unofficial/dropbox/files"
-	"github.com/jessemillar/byudzhet/helpers"
 	"github.com/jessemillar/health"
 	"github.com/jessemillar/serenity/controllers"
 	"github.com/jessemillar/serenity/database"
+	"github.com/jessemillar/serenity/helpers"
+	"github.com/jessemillar/serenity/views"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 )
@@ -58,6 +59,7 @@ func main() {
 
 	e.GET("/health", echo.WrapHandler(http.HandlerFunc(health.Check)))
 	e.Static("/library/*", "public")
+	e.GET("/library", views.Main)
 	e.GET("/library/v1/books", controllers.GetBooksV1)
 	e.GET("/library/v1/books/:bookId/cover", controllers.GetCoverV1)
 
