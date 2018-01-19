@@ -1,11 +1,12 @@
 package main
 
 import (
+	"fmt"
+	"io"
+	"io/ioutil"
 	"net/http"
 
 	"os"
-
-	"io"
 
 	"github.com/dropbox/dropbox-sdk-go-unofficial/dropbox"
 	"github.com/dropbox/dropbox-sdk-go-unofficial/dropbox/files"
@@ -22,11 +23,20 @@ func main() {
 	}
 
 	dbf := files.New(config)
-	_, content, err := dbf.Download(files.NewDownloadArg("/BookBuddy.backup"))
+	_, content, err := dbf.Download(files.NewDownloadArg("/Kimico/BookBuddy.backup"))
+	if err != nil {
+		body, _ := ioutil.ReadAll(content)
+		fmt.Println(string(body))
+		panic(err)
+	}
 
 	outFile, err := os.Create("BookBuddy.backup")
-	// handle err
+	if err != nil {
+		panic(err)
+	}
+
 	defer outFile.Close()
+
 	_, err = io.Copy(outFile, content)
 	if err != nil {
 		panic(err)
