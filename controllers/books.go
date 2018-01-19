@@ -9,5 +9,5 @@ import (
 )
 
 func GetBooksV1(c echo.Context) error {
-	return c.JSON(http.StatusOK, helpers.ReadBooks(database.Connection, c.Request().URL.String()))
+	return c.JSON(http.StatusOK, helpers.ReadBookBuddyBooks(database.Connection, c.Request().URL.String()))
 }

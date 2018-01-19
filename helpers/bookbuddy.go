@@ -26,14 +26,14 @@ type Image struct {
 	Blob *string
 }
 
-func ReadBooks(db *sql.DB, path string) []Book {
-	sql_readall := `
+func ReadBookBuddyBooks(db *sql.DB, path string) []Book {
+	query := `
 	SELECT ZTITLE, ZSUBTITLE, ZDISPLAYNAME, ZGENRE, ZSYNOPSIS, ZLCC, ZISBN, ZPUBLISHER, ZPUBLISHYEAR, ZPAGECOUNT, ZBOOK.Z_PK
 	FROM ZBOOK
 	INNER JOIN ZAUTHOR ON ZBOOK.ZAUTHORINFO=ZAUTHOR.Z_PK;
 `
 
-	rows, err := db.Query(sql_readall)
+	rows, err := db.Query(query)
 	if err != nil {
 		panic(err)
 	}
@@ -49,7 +49,7 @@ func ReadBooks(db *sql.DB, path string) []Book {
 		}
 
 		if len(*book.Image) > 0 {
-			*book.Image = path + "/" + *book.Image + "/cover.jpg"
+			*book.Image = path + "/" + *book.Image + "/cover"
 		}
 
 		allBooks = append(allBooks, book)
@@ -58,14 +58,32 @@ func ReadBooks(db *sql.DB, path string) []Book {
 	return allBooks
 }
 
-func ReadImage(db *sql.DB, id string) []byte {
-	sql_readall := `
-	SELECT ZIMAGE
-	FROM ZIMAGE
+func ConvertBookBuddyIdToIsbn(db *sql.DB, id string) (int, error) {
+	query := `
+	SELECT ZISBN
+	FROM ZBOOK
 	WHERE Z_PK=$1;
 `
 
-	row := db.QueryRow(sql_readall, id)
+	row := db.QueryRow(query, id)
+
+	book := Book{}
+	err := row.Scan(&book.ISBN)
+	if err != nil {
+		panic(err)
+	}
+
+	return book.ISBN, nil
+}
+
+func ReadBookBuddyImage(db *sql.DB, id string) []byte {
+	query := `
+	SELECT ZIMAGE
+	FROM ZIMAGE
+	WHERE ZBOOK=$1;
+`
+
+	row := db.QueryRow(query, id)
 
 	bookImage := Image{}
 	err := row.Scan(&bookImage.Blob)
@@ -74,5 +92,4 @@ func ReadImage(db *sql.DB, id string) []byte {
 	}
 
 	return []byte(*bookImage.Blob)
-
 }
