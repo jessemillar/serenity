@@ -42,7 +42,8 @@ func ReadBookBuddyBooks(db *sql.DB, path string) (*models.Data, *models.Error) {
 
 	defer rows.Close()
 
-	var allBooks []Book
+	data := &models.Data{}
+
 	for rows.Next() {
 		book := Book{}
 		err2 := rows.Scan(&book.Title, &book.Subtitle, &book.Author, &book.Genre, &book.Synopsis, &book.LCC, &book.ISBN, &book.Publisher, &book.PublishYear, &book.PageCount, &book.Image)
@@ -54,15 +55,13 @@ func ReadBookBuddyBooks(db *sql.DB, path string) (*models.Data, *models.Error) {
 			*book.Image = path + "/" + *book.Image + "/cover"
 		}
 
-		allBooks = append(allBooks, book)
-	}
+		marshaledBook, err := json.Marshal(book)
+		if err != nil {
+			panic(err)
+		}
 
-	response, err := json.Marshal(allBooks)
-	if err != nil {
-		panic(err)
+		data.Items = append(data.Items, marshaledBook)
 	}
-
-	data := &models.Data{Items: []json.RawMessage{response}}
 
 	return data, nil
 }
