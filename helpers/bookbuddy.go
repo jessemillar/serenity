@@ -2,7 +2,9 @@ package helpers
 
 import (
 	"database/sql"
+	"encoding/json"
 
+	"github.com/jessemillar/serenity/models"
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -26,7 +28,7 @@ type Image struct {
 	Blob *string
 }
 
-func ReadBookBuddyBooks(db *sql.DB, path string) []Book {
+func ReadBookBuddyBooks(db *sql.DB, path string) (*models.Data, *models.Error) {
 	query := `
 	SELECT ZTITLE, ZSUBTITLE, ZDISPLAYNAME, ZGENRE, ZSYNOPSIS, ZLCC, ZISBN, ZPUBLISHER, ZPUBLISHYEAR, ZPAGECOUNT, ZBOOK.Z_PK
 	FROM ZBOOK
@@ -55,7 +57,14 @@ func ReadBookBuddyBooks(db *sql.DB, path string) []Book {
 		allBooks = append(allBooks, book)
 	}
 
-	return allBooks
+	response, err := json.Marshal(allBooks)
+	if err != nil {
+		panic(err)
+	}
+
+	data := &models.Data{Items: []json.RawMessage{response}}
+
+	return data, nil
 }
 
 func ConvertBookBuddyIdToIsbn(db *sql.DB, id string) (int, error) {

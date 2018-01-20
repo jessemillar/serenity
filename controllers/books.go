@@ -1,13 +1,17 @@
 package controllers
 
 import (
-	"net/http"
-
 	"github.com/jessemillar/serenity/database"
 	"github.com/jessemillar/serenity/helpers"
 	"github.com/labstack/echo"
 )
 
 func GetBooksV1(c echo.Context) error {
-	return c.JSON(http.StatusOK, helpers.ReadBookBuddyBooks(database.Connection, c.Request().URL.String()))
+	const apiVersion = "1.0.0"
+
+	data, err := helpers.ReadBookBuddyBooks(database.Connection, c.Request().URL.String())
+
+	responseStatus, responseBody := buildResponse(apiVersion, data, err, nil)
+
+	return c.JSON(responseStatus, responseBody)
 }
