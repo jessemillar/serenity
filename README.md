@@ -61,7 +61,7 @@ INNER JOIN ZAUTHOR ON ZBOOK.ZAUTHORINFO=ZAUTHOR.Z_PK
 WHERE ZGENRE NOT LIKE "Art" AND
 ZGENRE NOT LIKE "Biography & Autobiography" AND
 ZGENRE NOT LIKE "Business & Economics" AND
-ZGENRE NOT LIKE "Coloring Book"
+ZGENRE NOT LIKE "Coloring Book" AND
 ZGENRE NOT LIKE "Comics & Graphic Novels" AND
 ZGENRE NOT LIKE "Cooking" AND 
 ZGENRE NOT LIKE "Dictionaries" AND
@@ -77,5 +77,5 @@ ZGENRE NOT LIKE "Philosophy" AND
 ZGENRE NOT LIKE "Poetry" AND
 ZGENRE NOT LIKE "Religion" AND 
 ZGENRE NOT LIKE "Self-Help" AND
-ZGENRE NOT LIKE "Young Adult Fiction" AND
+ZGENRE NOT LIKE "Young Adult Fiction";
 ```
