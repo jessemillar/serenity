@@ -61,11 +61,15 @@ ZGENRE NOT LIKE "Dictionaries" AND
 ZGENRE NOT LIKE "Encyclopedias" AND
 ZGENRE NOT LIKE "Fiction" AND 
 ZGENRE NOT LIKE "Foreign Language Study" AND
+ZGENRE NOT LIKE "Games & Activities" AND
 ZGENRE NOT LIKE "Health & Fitness" AND
 ZGENRE NOT LIKE "Humor" AND
-ZGENRE NOT LIKE "Juvenile Fiction" AND 
+ZGENRE NOT LIKE "Juvenile Fiction" AND
+ZGENRE NOT LIKE "Literary Collections" AND
 ZGENRE NOT LIKE "Literary Criticism" AND
 ZGENRE NOT LIKE "Magic" AND
+ZGENRE NOT LIKE "Nonfiction" AND
+ZGENRE NOT LIKE "Performing Arts" AND
 ZGENRE NOT LIKE "Philosophy" AND
 ZGENRE NOT LIKE "Poetry" AND
 ZGENRE NOT LIKE "Religion" AND 
