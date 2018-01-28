@@ -3,12 +3,11 @@ package helpers
 import (
 	"database/sql"
 	"encoding/json"
+	"net/http"
 
 	"github.com/jessemillar/serenity/models"
 	_ "github.com/mattn/go-sqlite3"
 )
-
-// TODO Clean up panics and db passing
 
 type Book struct {
 	Title       string  `json:"title"`
@@ -31,7 +30,7 @@ type Image struct {
 func ReadBookBuddyBooks(db *sql.DB, path string, query string) (*models.Data, *models.Error) {
 	rows, err := db.Query(query)
 	if err != nil {
-		panic(err)
+		return nil, models.NewError(http.StatusInternalServerError, err.Error())
 	}
 
 	defer rows.Close()
@@ -40,9 +39,9 @@ func ReadBookBuddyBooks(db *sql.DB, path string, query string) (*models.Data, *m
 
 	for rows.Next() {
 		book := Book{}
-		err2 := rows.Scan(&book.Title, &book.Subtitle, &book.Author, &book.Genre, &book.Synopsis, &book.LCC, &book.ISBN, &book.Publisher, &book.PublishYear, &book.PageCount, &book.Image)
-		if err2 != nil {
-			panic(err2)
+		err = rows.Scan(&book.Title, &book.Subtitle, &book.Author, &book.Genre, &book.Synopsis, &book.LCC, &book.ISBN, &book.Publisher, &book.PublishYear, &book.PageCount, &book.Image)
+		if err != nil {
+			return nil, models.NewError(http.StatusInternalServerError, err.Error())
 		}
 
 		if len(*book.Image) > 0 {
@@ -51,7 +50,7 @@ func ReadBookBuddyBooks(db *sql.DB, path string, query string) (*models.Data, *m
 
 		marshaledBook, err := json.Marshal(book)
 		if err != nil {
-			panic(err)
+			return nil, models.NewError(http.StatusInternalServerError, err.Error())
 		}
 
 		data.Items = append(data.Items, marshaledBook)
@@ -104,13 +103,13 @@ func ConvertBookBuddyIdToIsbn(db *sql.DB, id string) (int, error) {
 	book := Book{}
 	err := row.Scan(&book.ISBN)
 	if err != nil {
-		panic(err)
+		return 0, err
 	}
 
 	return book.ISBN, nil
 }
 
-func ReadBookBuddyImage(db *sql.DB, id string) []byte {
+func ReadBookBuddyImage(db *sql.DB, id string) ([]byte, error) {
 	query := `
 	SELECT ZIMAGE
 	FROM ZIMAGE
@@ -122,8 +121,8 @@ func ReadBookBuddyImage(db *sql.DB, id string) []byte {
 	bookImage := Image{}
 	err := row.Scan(&bookImage.Blob)
 	if err != nil {
-		panic(err)
+		return []byte{}, err
 	}
 
-	return []byte(*bookImage.Blob)
+	return []byte(*bookImage.Blob), nil
 }

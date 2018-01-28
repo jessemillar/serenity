@@ -10,7 +10,7 @@ import (
 func GetCoverV1(c echo.Context) error {
 	blob, err := helpers.GetCover(c.Param("bookId"))
 	if err != nil {
-		panic(err)
+		return c.JSON(http.StatusInternalServerError, err)
 	}
 
 	return c.Blob(http.StatusOK, http.DetectContentType(blob), blob)
