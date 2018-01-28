@@ -28,14 +28,7 @@ type Image struct {
 	Blob *string
 }
 
-func ReadBookBuddyBooks(db *sql.DB, path string) (*models.Data, *models.Error) {
-	query := `
-	SELECT ZTITLE, ZSUBTITLE, ZDISPLAYNAME, ZGENRE, ZSYNOPSIS, ZLCC, ZISBN, ZPUBLISHER, ZPUBLISHYEAR, ZPAGECOUNT, ZBOOK.Z_PK
-	FROM ZBOOK
-	INNER JOIN ZAUTHOR ON ZBOOK.ZAUTHORINFO=ZAUTHOR.Z_PK
-	WHERE ZWISHLIST=0;
-`
-
+func ReadBookBuddyBooks(db *sql.DB, path string, query string) (*models.Data, *models.Error) {
 	rows, err := db.Query(query)
 	if err != nil {
 		panic(err)
@@ -62,6 +55,38 @@ func ReadBookBuddyBooks(db *sql.DB, path string) (*models.Data, *models.Error) {
 		}
 
 		data.Items = append(data.Items, marshaledBook)
+	}
+
+	return data, nil
+}
+
+func ReadBookBuddyCatalogue(db *sql.DB, path string) (*models.Data, *models.Error) {
+	query := `
+	SELECT ZTITLE, ZSUBTITLE, ZDISPLAYNAME, ZGENRE, ZSYNOPSIS, ZLCC, ZISBN, ZPUBLISHER, ZPUBLISHYEAR, ZPAGECOUNT, ZBOOK.Z_PK
+	FROM ZBOOK
+	INNER JOIN ZAUTHOR ON ZBOOK.ZAUTHORINFO=ZAUTHOR.Z_PK
+	WHERE ZWISHLIST=0;
+`
+
+	data, err := ReadBookBuddyBooks(db, path, query)
+	if err != nil {
+		return nil, err
+	}
+
+	return data, nil
+}
+
+func ReadBookBuddyWishlist(db *sql.DB, path string) (*models.Data, *models.Error) {
+	query := `
+	SELECT ZTITLE, ZSUBTITLE, ZDISPLAYNAME, ZGENRE, ZSYNOPSIS, ZLCC, ZISBN, ZPUBLISHER, ZPUBLISHYEAR, ZPAGECOUNT, ZBOOK.Z_PK
+	FROM ZBOOK
+	INNER JOIN ZAUTHOR ON ZBOOK.ZAUTHORINFO=ZAUTHOR.Z_PK
+	WHERE ZWISHLIST=1;
+`
+
+	data, err := ReadBookBuddyBooks(db, path, query)
+	if err != nil {
+		return nil, err
 	}
 
 	return data, nil

@@ -56,7 +56,7 @@ func main() {
 
 	database.InitDB("BookBuddy.backup")
 
-	log.Println("Starting server")
+	log.Println("Configuring server")
 
 	e := echo.New()
 	e.Pre(middleware.RemoveTrailingSlash())
@@ -72,6 +72,7 @@ func main() {
 	e.Static("/library/*", "public")
 	e.GET("/library", views.Main)
 	e.GET("/library/v1/books", controllers.GetBooksV1)
+	e.GET("/library/v1/wishlist", controllers.GetWishlistV1)
 	e.GET("/library/v1/books/:bookId/cover", controllers.GetCoverV1)
 
 	e.Logger.Fatal(e.Start(":8000"))

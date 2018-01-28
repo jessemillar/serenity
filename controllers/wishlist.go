@@ -6,10 +6,10 @@ import (
 	"github.com/labstack/echo"
 )
 
-func GetBooksV1(c echo.Context) error {
+func GetWishlistV1(c echo.Context) error {
 	const apiVersion = "1.0.0"
 
-	data, err := helpers.ReadBookBuddyCatalogue(database.Connection, c.Request().URL.String())
+	data, err := helpers.ReadBookBuddyWishlist(database.Connection, c.Request().URL.String())
 
 	responseStatus, responseBody := buildResponse(apiVersion, data, err, nil)
 
