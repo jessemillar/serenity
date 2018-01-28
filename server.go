@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"io"
 	"io/ioutil"
+	"log"
 	"net/http"
 
 	"os"
@@ -21,9 +22,13 @@ import (
 )
 
 func main() {
+	log.Println("Configuring database download")
+
 	config := dropbox.Config{
 		Token: os.Getenv("SERENITY_LIBRARY_DROPBOX"),
 	}
+
+	log.Println("Downloading database")
 
 	dbf := files.New(config)
 	_, content, err := dbf.Download(files.NewDownloadArg("/Kimico/BookBuddy.backup"))
@@ -32,6 +37,8 @@ func main() {
 		fmt.Println(string(body))
 		panic(err)
 	}
+
+	log.Println("Saving database")
 
 	outFile, err := os.Create("BookBuddy.backup")
 	if err != nil {
@@ -45,7 +52,11 @@ func main() {
 		panic(err)
 	}
 
+	log.Println("Initializing database")
+
 	database.InitDB("BookBuddy.backup")
+
+	log.Println("Starting server")
 
 	e := echo.New()
 	e.Pre(middleware.RemoveTrailingSlash())
