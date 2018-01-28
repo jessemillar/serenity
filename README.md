@@ -8,3 +8,11 @@ My wife and I use the fabulous [BookBuddy iOS app](https://itunes.apple.com/us/a
 ```
 cd frontend && ng build --aot && cd .. && go run server.go
 ```
+
+## Troubleshooting
+Title, author, and ISBN are required by the server. Run the following query to find problematic records:
+```
+SELECT ZTITLE, ZDISPLAYNAME, ZISBN FROM ZBOOK
+INNER JOIN ZAUTHOR ON ZBOOK.ZAUTHORINFO=ZAUTHOR.Z_PK
+WHERE ZTITLE LIKE "" OR ZDISPLAYNAME LIKE "" OR ZISBN LIKE "";
+```

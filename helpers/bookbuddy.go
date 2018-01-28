@@ -14,12 +14,12 @@ type Book struct {
 	Title       string  `json:"title"`
 	Subtitle    *string `json:"subtitle,omitempty"`
 	Author      string  `json:"author"`
-	Genre       string  `json:"genre"`
+	Genre       *string `json:"genre"`
 	Synopsis    *string `json:"synopsis,omitempty"`
 	LCC         *string `json:"lcc,omitempty"`
 	ISBN        int     `json:"isbn"`
 	Publisher   *string `json:"publisher,omitempty"`
-	PublishYear int     `json:"publishYear"`
+	PublishYear *int    `json:"publishYear"`
 	PageCount   *int    `json:"pageCount,omitempty"`
 	Image       *string `json:"image,omitempty"`
 }
