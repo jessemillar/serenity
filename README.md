@@ -10,9 +10,32 @@ cd frontend && ng build --aot && cd .. && go run server.go
 ```
 
 ## Troubleshooting
+### Empty Values
 Title, author, and ISBN are required by the server. Run the following query to find problematic records:
 ```
 SELECT ZTITLE, ZDISPLAYNAME, ZISBN FROM ZBOOK
 INNER JOIN ZAUTHOR ON ZBOOK.ZAUTHORINFO=ZAUTHOR.Z_PK
 WHERE ZTITLE LIKE "" OR ZDISPLAYNAME LIKE "" OR ZISBN LIKE "";
+```
+
+### Poorly Formatted Author Names
+```
+SELECT ZTITLE, ZDISPLAYNAME FROM ZBOOK
+INNER JOIN ZAUTHOR ON ZBOOK.ZAUTHORINFO=ZAUTHOR.Z_PK
+WHERE ZDISPLAYNAME LIKE '%\,%' ESCAPE '\';
+```
+
+### Commas in Book Titles
+```
+SELECT ZTITLE, ZDISPLAYNAME FROM ZBOOK
+INNER JOIN ZAUTHOR ON ZBOOK.ZAUTHORINFO=ZAUTHOR.Z_PK
+WHERE ZTITLE LIKE '%\,%' ESCAPE '\';
+```
+
+### Parenthesis in Book Titles
+We don't like book titles that say things like `(Book 4)` since that's not actually part of the title. Run the following query to find potential issues:
+```
+SELECT ZTITLE, ZDISPLAYNAME FROM ZBOOK
+INNER JOIN ZAUTHOR ON ZBOOK.ZAUTHORINFO=ZAUTHOR.Z_PK
+WHERE ZTITLE LIKE '%\(%' ESCAPE '\';
 ```
