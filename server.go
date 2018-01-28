@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"html/template"
 	"io"
 	"io/ioutil"
 	"log"
@@ -15,8 +14,6 @@ import (
 	"github.com/jessemillar/health"
 	"github.com/jessemillar/serenity/controllers"
 	"github.com/jessemillar/serenity/database"
-	"github.com/jessemillar/serenity/helpers"
-	"github.com/jessemillar/serenity/views"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 )
@@ -62,15 +59,8 @@ func main() {
 	e.Pre(middleware.RemoveTrailingSlash())
 	e.Use(middleware.CORS())
 
-	templateEngine := &helpers.Template{
-		Templates: template.Must(template.ParseGlob("public/*/*.html")),
-	}
-
-	e.Renderer = templateEngine
-
 	e.GET("/health", echo.WrapHandler(http.HandlerFunc(health.Check)))
-	e.Static("/library/*", "public")
-	e.GET("/library", views.Main)
+	e.Static("/library/*", "frontend/dist")
 	e.GET("/library/v1/books", controllers.GetBooksV1)
 	e.GET("/library/v1/wishlist", controllers.GetWishlistV1)
 	e.GET("/library/v1/books/:bookId/cover", controllers.GetCoverV1)

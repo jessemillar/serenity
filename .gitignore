@@ -1,6 +1,51 @@
-# Created by https://www.gitignore.io/api/golang,macos,intellij
+# Created by https://www.gitignore.io/api/go,macos,angular,intellij
 
-#!! ERROR: golang is undefined. Use list command to see defined gitignore types !!#
+### Angular ###
+## Angular ##
+# compiled output
+/dist
+/tmp
+/app/**/*.js
+/app/**/*.js.map
+
+# dependencies
+/node_modules
+/bower_components
+
+# IDEs and editors
+/.idea
+
+# misc
+/.sass-cache
+/connect.lock
+/coverage/*
+/libpeerconnection.log
+npm-debug.log
+testem.log
+/typings
+
+# e2e
+/e2e/*.js
+/e2e/*.map
+
+#System Files
+.DS_Store
+
+### Go ###
+# Binaries for programs and plugins
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Test binary, build with `go test -c`
+*.test
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+
+# Project-local glide cache, RE: https://github.com/Masterminds/glide/issues/736
+.glide/
 
 ### Intellij ###
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio and Webstorm
@@ -95,4 +140,4 @@ Temporary Items
 .apdisk
 
 
-# End of https://www.gitignore.io/api/golang,macos,intellij
+# End of https://www.gitignore.io/api/go,macos,angular,intellij
